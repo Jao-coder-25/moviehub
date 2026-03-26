@@ -1,6 +1,10 @@
 package com.moviehub.service;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.moviehub.model.Filme;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -10,7 +14,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
 public class BuscadorDeFilme {
-    public String buscarFilme(String nomeFilme) throws InterruptedException, IOException {
+    public Filme buscarFilme(String nomeFilme) throws InterruptedException, IOException {
         String apiKey = System.getenv("OMDB_API_KEY");
 
         if (apiKey == null || apiKey.isEmpty()) {
@@ -30,7 +34,15 @@ public class BuscadorDeFilme {
 
         HttpResponse<String> response = client.
                 send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
+
+        String json = response.body();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Filme filme = gson.fromJson(json, Filme.class);
+
+        if (filme.getResposta().equals("False")) {
+            return null;
+        }
+        return filme;
     }
 }
 
