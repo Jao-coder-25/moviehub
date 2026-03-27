@@ -39,7 +39,7 @@ public class BuscadorDeFilme {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Filme filme = gson.fromJson(json, Filme.class);
 
-        if (filme.getResposta().equals("False")) {
+        if ("False".equalsIgnoreCase(filme.getResposta())) {
             return null;
         }
         return filme;
