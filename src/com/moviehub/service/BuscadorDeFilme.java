@@ -14,6 +14,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
 public class BuscadorDeFilme {
+    // Faz requisição à API OMDb e retorna um objeto Filme
     public Filme buscarFilme(String nomeFilme) throws InterruptedException, IOException {
         String apiKey = System.getenv("OMDB_API_KEY");
 
@@ -39,6 +40,7 @@ public class BuscadorDeFilme {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Filme filme = gson.fromJson(json, Filme.class);
 
+        // Verifica se a API retornou erro
         if ("False".equalsIgnoreCase(filme.getResposta())) {
             return null;
         }

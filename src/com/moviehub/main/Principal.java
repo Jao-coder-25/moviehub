@@ -4,14 +4,21 @@ import com.moviehub.model.Filme;
 import com.moviehub.service.BuscadorDeFilme;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Principal {
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
         String escolherOpcao;
-        ArrayList<Filme> filmesFavoritos = new ArrayList<>();
+
+        // Armazena os títulos originais dos filmes favoritos
+        Set<String> filmesFavoritos = new HashSet<>();
+
+        // Controla duplicidade (normalizado: sem espaços e case-insensitive)
+        Set<String> titulosNormalizados = new HashSet<>();
+
         String nomeDoFilme;
         BuscadorDeFilme buscador = new BuscadorDeFilme();
 
@@ -32,19 +39,19 @@ public class Principal {
                     String resposta = scanner.nextLine();
                     if (resposta.equalsIgnoreCase("S")) {
 
-                        boolean adicionadoNaLista = false;
+                        String tituloOriginal = filme.getTitulo();
 
-                        for (Filme f : filmesFavoritos ) {
-                            if (f.getTitulo().equalsIgnoreCase(filme.getTitulo())) {
-                                adicionadoNaLista = true;
-                                break;
-                            }
-                        }if (!adicionadoNaLista) {
-                                filmesFavoritos.add(filme);
-                                System.out.println("Filme adicionado aos favoritos!");
+                        // Normaliza o título para evitar duplicatas com diferenças de maiúsculas/minúsculas
+                        String tituloNormalizado = tituloOriginal.trim().toLowerCase();
+
+                        // Se não existir, adiciona nos favoritos
+                        if (titulosNormalizados.add(tituloNormalizado)) {
+                            filmesFavoritos.add(tituloOriginal);
+                            System.out.println("Filme adicionado aos favoritos com sucesso!");
                         }else {
-                                System.out.println("Filme já está na lista!");
+                            System.out.println("Filme já existe na lista!");
                         }
+
                     }
                 }else {
                     System.out.println("Filme não encontrado");
@@ -54,7 +61,7 @@ public class Principal {
                 System.out.println("Sua lista está vazia!");
             } else {
                 System.out.println("🎬Seus filmes favoritos:\n");
-                for (Filme f : filmesFavoritos) {
+                for (String f : filmesFavoritos) {
                     System.out.println(f);
                     System.out.println("--------------");
                     }
